@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://lib.baomitu.com/amazeui/2.7.2/js/amazeui.min.js"></script>
+		<script src="https://lib.baomitu.com/underscore.js/1.9.1/underscore-min.js"></script>
+		<style>
+			.cor {
+  background-color: blueviolet;
+ }
+ #box {
+  width: 500px;
+  border: 2px solid black;
+  background-color: #B6F5D0;
+  margin: 0 auto;
+  height: 600px;
+ }
+ ul {
+  list-style: none;
+ }
+ li {
+  width: 50px;
+  height: 50px;
+  margin: 20px;
+  float: left;
+  line-height: 50px;
+  text-align: center;
+ }
+ .center {
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
+  margin: 0 auto;
+ }
+ #pp {
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+  font-size: 35px;
+  color: deepskyblue;
+ }
+ .btn {
+	 width: 100px;
+	 height: 30px;
+	 margin: 10px 20px;
+ }
+ #btn{
+	 background-color: greenyellow;
+ }
+ #triggerBtn{
+	 background-color: orange;
+ }
+ 
+ /*模态框*/
+.modal {
+    display: none; /* 默认隐藏 */
+    position: fixed; /* 根据浏览器定位 */
+    z-index: 1; /* 放在顶部 */
+    left: 0;
+    top: 0;
+    width: 100%; /* 全宽 */
+    height: 100%; /* 全高 */
+    overflow: auto; /* 允许滚动 */
+    background-color: rgba(0,0,0,0.4); /* 背景色 */
+}
+/*模态框内容*/
+.modal-content {
+    display: flex; /*采用flexbox布局*/
+    flex-direction: column; /*垂直排列*/
+    position: relative;
+    background-color: #fefefe;
+    margin: 15% auto; /*距顶部15% 水平居中*/
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    animation: topDown 0.4s; /*自定义动画，从模态框内容上到下出现*/
+}
+@keyframes topDown {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+/*模态框头部*/
+.modal-header {
+    display: flex; /*采用flexbox布局*/
+    flex-direction: row; /*水平布局*/
+    align-items: center; /*内容垂直居中*/
+    justify-content: center;
+	
+}
+#studentName{
+	color: skyblue;
+	font-size: 30px;
+	
+}
+/*关闭X 样式*/
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+ .showImg{
+	display: flex;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+}
+.showImg img{
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+
+ </style>
+
+	</head>
+	<body>
+		<!-- 显示图片 -->
+		<div id="myModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span id="studentName"></span>
+					<span id="closeBtn" class="close"></span>
+				</div>
+				<div class="modal-body">
+					<div class="showImg">
+						<img id="showImg" src="https://dj-myblog.oss-cn-chengdu.aliyuncs.com/static/img/loading.gif" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="box">
+			<h1 style="text-align:center">点名系统</h1>
+			<div class="center">
+				<input class="btn" type="button" value="开始点名" id="btn">
+				<input class="btn" type="button" value="停止点名" id="triggerBtn">
+			</div>
+			<span id="pp"></span>
+			<div id="dv">
+			</div>
+		</div>
+
+
+
+		<script>
+			function my$(id) {
+				return document.getElementById(id);
+			}
+
+
+			//定义数组，存放数值
+			var arr = ["旧城", "喃安", "晴天", "初晴", "软喵", "回眸", "琉羽", "浅墨", "绾安", "挽辞", "眼眸", "钟情", "心鸢", "安稳", "笑浅", "冷兮", "静谧",
+				"漠望", "恋夏", "晴栀"
+			];
+			var imgArr = ["callRoll/img/00.jpg", "callRoll/img/01.jpg", "callRoll/img/02.jpg", "callRoll/img/03.jpg", "callRoll/img/04.jpg", "callRoll/img/05.jpg", "callRoll/img/06.jpg",
+						  "callRoll/img/07.jpg", "callRoll/img/08.jpg", "callRoll/img/09.jpg", "callRoll/img/10.jpg", "callRoll/img/11.jpg", "callRoll/img/12.jpg", "callRoll/img/13.jpg",
+						  "callRoll/img/14.jpg", "callRoll/img/15.jpg", "callRoll/img/16.jpg", "callRoll/img/17.jpg", "callRoll/img/18.jpg", "callRoll/img/19.jpg"];
+						  
+			//先创建一个ul加入到名字为dv的div中
+			var oul = document.createElement("ul");
+			my$("dv").appendChild(oul);
+			//接下来遍历arr数组，动态创建li元素并且加入到ul中，并且把数组变量动态写到li中
+			for (var i = 0; i < arr.length; i++) {
+				oli = document.createElement("li");
+				oul.appendChild(oli);
+				oli.innerHTML = arr[i];
+			}
+
+			//先获取到所有的li，为下面的应用css样式做铺垫
+			var oli = oul.getElementsByTagName("li");
+			var num;//定义下标
+			var timer; //这里先定义一个变量，开启定时器再赋值，
+			//为鼠标注册点击事件
+			my$("btn").onclick = function() {
+				clearInterval(timer); //在开启定时器之前先清除定时器，避免出现用户多次点击开启多个定时器而关不掉。
+				//开启定时器并赋值给变量
+				timer = setInterval(function() {
+					num = parseInt(Math.random() * arr.length);
+					console.log(num);
+				
+					//这里遍历所有的li元素，在开启定时器之前先把所有的li的样式清除掉
+					//如果这里不清除，那么所有的li在下一步都会全部应用上css样式，
+					//全部都会高亮显示,无法实现排他效果
+					for (var i = 0; i < oli.length; i++) {
+						oli[i].className = "";
+					}
+					oli[num].className = "cor";
+					//将生成的随机数动态显示到span中，将最后所选择的数组名显示到span中
+					my$("pp").innerHTML = arr[num];
+					my$("studentName").innerHTML = arr[num];
+					$('#showImg').attr('src',imgArr[num]);
+					console.log(imgArr[num]);
+				}, 100);
+			}
+
+			/*建立模态框对象*/
+			var modalBox = {};
+			/*获取模态框*/
+			modalBox.modal = document.getElementById("myModal");
+			/*获得trigger按钮*/
+			modalBox.triggerBtn = document.getElementById("triggerBtn");
+			/*获得关闭按钮*/
+			modalBox.closeBtn = document.getElementById("closeBtn");
+			/*模态框显示*/
+			modalBox.show = function() {
+				console.log(this.modal);
+				this.modal.style.display = "block";
+			}
+			/*模态框关闭*/
+			modalBox.close = function() {
+				this.modal.style.display = "none";
+			}
+			/*当用户点击模态框内容之外的区域，模态框也会关闭*/
+			modalBox.outsideClick = function() {
+				var modal = this.modal;
+				window.onclick = function(event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+			}
+			/*模态框初始化*/
+			modalBox.init = function() {
+				var that = this;
+				this.triggerBtn.onclick = function() {
+					//停止点名按钮。
+					clearInterval(timer);
+					that.show();
+				}
+				this.closeBtn.onclick = function() {
+					that.close();
+				}
+				this.outsideClick();
+			}
+			modalBox.init();
+		</script>
+	</body>
+
+</html>
